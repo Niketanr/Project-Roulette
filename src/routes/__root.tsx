@@ -154,8 +154,8 @@ export const Route =
 
         {
           rel: "icon",
-          href: "/favicon.ico",
-          type: "image/x-icon",
+          href: "/nw-logo.svg",
+          type: "image/svg+xml",
         },
       ],
     }),

@@ -156,3 +156,191 @@ export function studentsToCsv(students: Student[]) {
   const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
   return [cols.join(","), ...students.map((s) => cols.map((c) => esc(s[c])).join(","))].join("\n");
 }
+
+/* -------------------------------------------------------------------------- */
+/* AI Project Evaluator                                                       */
+/* -------------------------------------------------------------------------- */
+
+const PENDING_EVAL_KEY = "project_roulette_pending_eval";
+
+export type EvaluationSummary = {
+  id: string;
+  repo_name: string;
+  overall: number;
+  headline: string;
+};
+
+export type EvaluationReport = {
+  unlocked: boolean;
+  id: string;
+  repo_name: string;
+  overall: number;
+  headline?: string;
+  report?: {
+    project_summary: string;
+    headline: string;
+    scores: {
+      code_structure: number;
+      documentation: number;
+      testing: number;
+      real_world_relevance: number;
+      complexity: number;
+      deployment_readiness: number;
+    };
+    strengths: string[];
+    improvements: {
+      area: string;
+      fix: string;
+    }[];
+    signals: {
+      files: number;
+      readme_chars: number;
+      has_tests: boolean;
+      has_ci: boolean;
+      has_docker: boolean;
+      has_license: boolean;
+      has_dependency_file: boolean;
+      has_env_example: boolean;
+      commits: number;
+      last_push: string | null;
+      size_kb: number;
+      stars: number;
+      is_fork: boolean;
+      languages: string[];
+    };
+  };
+};
+
+export async function evaluateProject(
+  repoUrl: string,
+): Promise<EvaluationSummary> {
+  const url = import.meta.env["VITE_SUPABASE_URL"] as string;
+  const key = import.meta.env[
+    "VITE_SUPABASE_PUBLISHABLE_KEY"
+  ] as string;
+
+  const res = await fetch(
+    `${url}/functions/v1/evaluate-project`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+      },
+      body: JSON.stringify({ repoUrl }),
+    },
+  );
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok || !data?.id) {
+    throw new Error(
+      typeof data?.error === "string"
+        ? data.error
+        : "The evaluation failed. Please try again.",
+    );
+  }
+
+  const result: EvaluationSummary = {
+    id: String(data.id),
+    repo_name: String(data.repo_name ?? ""),
+    overall: Number(data.overall ?? 0),
+    headline: String(data.headline ?? ""),
+  };
+
+  setPendingEval(result.id);
+
+  return result;
+}
+
+export function setPendingEval(id: string) {
+  localStorage.setItem(PENDING_EVAL_KEY, id);
+}
+
+export function getPendingEval(): string | null {
+  return localStorage.getItem(PENDING_EVAL_KEY);
+}
+
+export function clearPendingEval() {
+  localStorage.removeItem(PENDING_EVAL_KEY);
+}
+
+export async function linkEvaluation(evalId: string) {
+  const me = getMe();
+
+  if (!me?.phone) {
+    throw new Error(
+      "Please register before unlocking your evaluation.",
+    );
+  }
+
+  const url = import.meta.env["VITE_SUPABASE_URL"] as string;
+  const key = import.meta.env[
+    "VITE_SUPABASE_PUBLISHABLE_KEY"
+  ] as string;
+
+  const res = await fetch(
+    `${url}/rest/v1/rpc/link_evaluation`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+      },
+      body: JSON.stringify({
+        p_eval_id: evalId,
+        p_phone: me.phone,
+      }),
+    },
+  );
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok || data !== true) {
+    throw new Error(
+      "We couldn't link your evaluation to your registration.",
+    );
+  }
+
+  return true;
+}
+
+export async function getEvaluation(
+  id: string,
+  phone?: string,
+): Promise<EvaluationReport> {
+  const url = import.meta.env["VITE_SUPABASE_URL"] as string;
+  const key = import.meta.env[
+    "VITE_SUPABASE_PUBLISHABLE_KEY"
+  ] as string;
+
+  const res = await fetch(
+    `${url}/rest/v1/rpc/get_evaluation`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+      },
+      body: JSON.stringify({
+        p_id: id,
+        p_phone: phone ?? null,
+      }),
+    },
+  );
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    throw new Error(
+      typeof data?.message === "string"
+        ? data.message
+        : "Unable to load the evaluation.",
+    );
+  }
+
+  return data as EvaluationReport;
+}

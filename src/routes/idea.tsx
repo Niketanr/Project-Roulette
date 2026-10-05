@@ -30,7 +30,7 @@ function IdeaPage() {
   const run = async () => {
     const form = getForm();
     if (!form) {
-      navigate({ to: "/" });
+      navigate({ to: "/ideas" });
       return;
     }
     const n = getSpins() + 1;

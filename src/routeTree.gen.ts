@@ -12,10 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as DoneRouteImport } from './routes/done'
+import { Route as EvaluateRouteImport } from './routes/evaluate'
 import { Route as IdeaRouteImport } from './routes/idea'
+import { Route as IdeasRouteImport } from './routes/ideas'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ReportIdRouteImport } from './routes/report.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -32,9 +35,19 @@ const DoneRoute = DoneRouteImport.update({
   path: '/done',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EvaluateRoute = EvaluateRouteImport.update({
+  id: '/evaluate',
+  path: '/evaluate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IdeaRoute = IdeaRouteImport.update({
   id: '/idea',
   path: '/idea',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IdeasRoute = IdeasRouteImport.update({
+  id: '/ideas',
+  path: '/ideas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LeaderboardRoute = LeaderboardRouteImport.update({
@@ -52,60 +65,99 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReportIdRoute = ReportIdRouteImport.update({
+  id: '/report/$id',
+  path: '/report/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/done': typeof DoneRoute
+  '/evaluate': typeof EvaluateRoute
   '/idea': typeof IdeaRoute
+  '/ideas': typeof IdeasRoute
   '/leaderboard': typeof LeaderboardRoute
   '/me': typeof MeRoute
   '/register': typeof RegisterRoute
+  '/report/$id': typeof ReportIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/done': typeof DoneRoute
+  '/evaluate': typeof EvaluateRoute
   '/idea': typeof IdeaRoute
+  '/ideas': typeof IdeasRoute
   '/leaderboard': typeof LeaderboardRoute
   '/me': typeof MeRoute
   '/register': typeof RegisterRoute
+  '/report/$id': typeof ReportIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/done': typeof DoneRoute
+  '/evaluate': typeof EvaluateRoute
   '/idea': typeof IdeaRoute
+  '/ideas': typeof IdeasRoute
   '/leaderboard': typeof LeaderboardRoute
   '/me': typeof MeRoute
   '/register': typeof RegisterRoute
+  '/report/$id': typeof ReportIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/admin' | '/done' | '/idea' | '/leaderboard' | '/me' | '/register'
+    | '/'
+    | '/admin'
+    | '/done'
+    | '/evaluate'
+    | '/idea'
+    | '/ideas'
+    | '/leaderboard'
+    | '/me'
+    | '/register'
+    | '/report/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/done' | '/idea' | '/leaderboard' | '/me' | '/register'
+  to:
+    | '/'
+    | '/admin'
+    | '/done'
+    | '/evaluate'
+    | '/idea'
+    | '/ideas'
+    | '/leaderboard'
+    | '/me'
+    | '/register'
+    | '/report/$id'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/done'
+    | '/evaluate'
     | '/idea'
+    | '/ideas'
     | '/leaderboard'
     | '/me'
     | '/register'
+    | '/report/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   DoneRoute: typeof DoneRoute
+  EvaluateRoute: typeof EvaluateRoute
   IdeaRoute: typeof IdeaRoute
+  IdeasRoute: typeof IdeasRoute
   LeaderboardRoute: typeof LeaderboardRoute
   MeRoute: typeof MeRoute
   RegisterRoute: typeof RegisterRoute
+  ReportIdRoute: typeof ReportIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -131,11 +183,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DoneRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/evaluate': {
+      id: '/evaluate'
+      path: '/evaluate'
+      fullPath: '/evaluate'
+      preLoaderRoute: typeof EvaluateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/idea': {
       id: '/idea'
       path: '/idea'
       fullPath: '/idea'
       preLoaderRoute: typeof IdeaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ideas': {
+      id: '/ideas'
+      path: '/ideas'
+      fullPath: '/ideas'
+      preLoaderRoute: typeof IdeasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/leaderboard': {
@@ -159,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/report/$id': {
+      id: '/report/$id'
+      path: '/report/$id'
+      fullPath: '/report/$id'
+      preLoaderRoute: typeof ReportIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -166,10 +239,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   DoneRoute: DoneRoute,
+  EvaluateRoute: EvaluateRoute,
   IdeaRoute: IdeaRoute,
+  IdeasRoute: IdeasRoute,
   LeaderboardRoute: LeaderboardRoute,
   MeRoute: MeRoute,
   RegisterRoute: RegisterRoute,
+  ReportIdRoute: ReportIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

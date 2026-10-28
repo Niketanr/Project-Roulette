@@ -7,10 +7,10 @@ export const INTERESTS = ["Cricket", "Music", "Health", "Finance", "Gaming", "Mo
 export const YEARS = ["1st year", "2nd year", "3rd year", "Final year", "Graduated"];
 
 export const COLLEGES = [
-  "IIT Madras", "IIT Bombay", "IIT Hyderabad", "NIT Warangal", "NIT Trichy", "BITS Pilani", "VIT Vellore",
+  "IIT Madras", "IIT Bombay", "IIT Hyderabad", "NIT Warangal", "NIT Trichy","Amrita Vishwa Vidyapeetham", "BITS Pilani", "VIT Vellore",
   "SRM Chennai", "Anna University", "JNTU Hyderabad", "Osmania University", "CBIT Hyderabad", "VNR VJIET",
   "Vasavi College of Engineering", "GRIET Hyderabad", "KL University", "Andhra University", "GITAM Visakhapatnam",
-  "Amrita Coimbatore", "PSG Tech Coimbatore", "RV College Bengaluru", "BMS College Bengaluru", "PES University",
+  "PSG Tech Coimbatore", "RV College Bengaluru", "BMS College Bengaluru", "PES University",
   "MIT Manipal", "COEP Pune", "VJTI Mumbai", "DTU Delhi", "NSUT Delhi", "Jadavpur University", "Thapar University",
 ];
 
